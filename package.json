@@ -1,0 +1,29 @@
+{
+  "name": "kontik",
+  "version": "1.0.1",
+  "description": "Simple node service container for managing of singletons",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "./node_modules/babel-cli/bin/babel.js ./src --out-dir ./dist",
+    "prepublish": "npm run build",
+    "test": "mocha --require babel-core/register 'test/index.js'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bouchal/node-kontik.git"
+  },
+  "author": "Antonín Bouchal <me@justme.cz>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/bouchal/node-kontik/issues"
+  },
+  "homepage": "https://github.com/bouchal/node-kontik#readme",
+  "devDependencies": {
+    "babel": "^6.23.0",
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-preset-es2015": "^6.24.1",
+    "mocha": "^4.1.0"
+  }
+}
