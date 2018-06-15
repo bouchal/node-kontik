@@ -4,7 +4,8 @@ class Services {
     constructor(config, {
         dir,
         configDecoratorFile,
-        servicesDecorationFile
+        servicesDecorationFile,
+        services = {}
     } = {}) {
         this._config = config;
         this._dir = dir;
@@ -12,6 +13,15 @@ class Services {
         this._servicesDecoratorFile = servicesDecorationFile;
 
         this._initializedServices = [];
+        this._services = services;
+    }
+
+    getService(name) {
+        if (!this._services[name]) {
+            this.createService(name);
+        }
+
+        return this._services[name];
     }
 
     createService(name) {
@@ -34,11 +44,11 @@ class Services {
         let initializer = require(this._dir + '/' + name);
         initializer = initializer.default || initializer;
 
-        this[name] = this._isClass(initializer)
+        this._services[name] = this._isClass(initializer)
             ? initializer(services, config)
             : new initializer(services, config);
 
-        return this[name];
+        return this._services[name];
     }
 
     _isClass(v) {
@@ -89,11 +99,7 @@ class Services {
 const createServicesProxy = (services) => {
     const ServicesProxy = new Proxy(services, {
         get: function (target, name, receiver) {
-            if (!target[name]) {
-                target.createService(name);
-            }
-
-            return target[name];
+            return target.getService(name);
         }
     });
 

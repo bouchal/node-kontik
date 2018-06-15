@@ -59,6 +59,27 @@ export default class SimpleService
 }
 ```
 
+### Predefined services
+
+Sometimes you need create services with different way or you need to initialize them on different place, but work
+with them inside services initialized in Kontik.
+
+That's why here is solution how you can pass already initialized object to Kontik constructor.
+
+```javascript
+import kontik from 'kontik';
+
+const config = {...}
+
+const services = kontik(config, {
+    services: {
+        PredefinedService: new SomeService()
+    }
+});
+
+console.log(services.PredefinedService.getSomeValue());
+```
+
 ### Decorate input parameters
 
 If you define service in folder, you can add files with exported function `_config.js` and `_services.js` for decorate
