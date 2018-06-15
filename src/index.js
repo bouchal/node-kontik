@@ -4,14 +4,12 @@ class Services {
     constructor(config, {
         dir,
         configDecoratorFile,
-        servicesDecorationFile,
-        initializerFile
+        servicesDecorationFile
     } = {}) {
         this._config = config;
         this._dir = dir;
         this._configDecoratorFile = configDecoratorFile;
         this._servicesDecoratorFile = servicesDecorationFile;
-        this._initializerFile = initializerFile;
 
         this._initializedServices = [];
     }
@@ -107,8 +105,7 @@ const createServicesProxy = (services) => {
 const defaultOptions = {
     dir: process.cwd() + '/services',
     configDecoratorFile: '_config.js',
-    servicesDecorationFile: '_services.js',
-    initializerFile: '_init.js'
+    servicesDecorationFile: '_services.js'
 };
 
 export default (config, options = {}) => {
