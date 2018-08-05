@@ -17,7 +17,7 @@ const config = {
 
 const options = {
     dir: __dirname + "/services" // Default is process.cwd()
-}
+};
 
 const services = kontik(config, options);
 
@@ -59,6 +59,58 @@ export default class SimpleService
 }
 ```
 
+### Async services
+
+In Javascript is almost everything based on asynchronous process. That means that you need to have some common way, 
+how to call asynchronously defined services together with synchronous services without remembering,
+which way is service loaded.
+
+Luckily Kontik have magic `async` parameter in initial options.
+
+```javascript
+import kontik from 'kontik';
+
+const config = {...};
+
+const options = {
+    async: true // Default it's false
+};
+
+const services = kontik(config, options);
+
+const print = async () => {
+    const simpleService = await services.SimpleService;
+    
+    console.log(simpleService.getValue()); // Print `Promise {<pending>}`
+}
+```
+
+After that every call to any service is served every time through Promise.   
+
+#### How it works?
+
+It's simple. When you call some service, loader check, if returned value from service initial function is promise
+(has `.then` function).
+
+If it's not, it return synchronous object as asynchronous through Promise.
+
+When you want initialize asynchronous service, just return Promise in initial function.
+
+__For example:__
+
+```javascript
+export default (services, config) => {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            resolve(new SomeService(services, config));
+        }, 10000);
+    });
+};
+```
+
+Remember, that all service initial functions is called as singleton. And it also applies in this. When initial promise
+is resolved, result is saved and event it's served through promise, it's already saved in container memory.
+
 ### Predefined services
 
 Sometimes you need create services with different way or you need to initialize them on different place, but work
@@ -69,7 +121,7 @@ That's why here is solution how you can pass already initialized object to Konti
 ```javascript
 import kontik from 'kontik';
 
-const config = {...}
+const config = {...};
 
 const services = kontik(config, {
     services: {
