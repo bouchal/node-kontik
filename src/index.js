@@ -26,19 +26,13 @@ class Services {
     }
 
     _getSyncService(name) {
-        if (!this._services[name]) {
-            this.createService(name);
-        }
-
-        return this._services[name];
+        return this._services[name] || this.createService(name);
     }
 
-    async _getAsyncService(name) {
-        if (!this._services[name]) {
-            return this._initialPromises[name] || this.createService(name);
-        }
-
-        return await this._services[name];
+    _getAsyncService(name) {
+        return Promise.resolve(
+            this._services[name] || this._initialPromises[name] || Promise.resolve(this.createService(name))
+        );
     }
 
     createService(name) {
