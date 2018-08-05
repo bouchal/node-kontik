@@ -81,7 +81,7 @@ const services = kontik(config, options);
 const print = async () => {
     const simpleService = await services.SimpleService;
     
-    console.log(simpleService.getValue()); // Print `Promise {<pending>}`
+    console.log(simpleService.getValue());
 }
 ```
 
