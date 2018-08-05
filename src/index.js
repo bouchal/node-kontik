@@ -5,23 +5,40 @@ class Services {
         dir,
         configDecoratorFile,
         servicesDecorationFile,
-        services = {}
+        services = {},
+        async
     } = {}) {
         this._config = config;
         this._dir = dir;
         this._configDecoratorFile = configDecoratorFile;
         this._servicesDecoratorFile = servicesDecorationFile;
+        this._async = async;
 
         this._initializedServices = [];
+        this._initialPromises = [];
         this._services = services;
     }
 
     getService(name) {
+        return this._async
+            ? this._getAsyncService(name)
+            : this._getSyncService(name);
+    }
+
+    _getSyncService(name) {
         if (!this._services[name]) {
             this.createService(name);
         }
 
         return this._services[name];
+    }
+
+    async _getAsyncService(name) {
+        if (!this._services[name]) {
+            return this._initialPromises[name] || this.createService(name);
+        }
+
+        return await this._services[name];
     }
 
     createService(name) {
@@ -44,11 +61,23 @@ class Services {
         let initializer = require(this._dir + '/' + name);
         initializer = initializer.default || initializer;
 
-        this._services[name] = this._isClass(initializer)
+        const executedInitializer = this._isClass(initializer)
             ? initializer(services, config)
             : new initializer(services, config);
 
-        return this._services[name];
+        if (!this._async || !this._isPromise(executedInitializer)) {
+            this._services[name] = executedInitializer;
+            return this._services[name];
+        }
+
+        this._initialPromises[name] = executedInitializer;
+
+        executedInitializer.then((service) => {
+            delete this._initialPromises[name];
+            this._services[name] = service;
+        });
+
+        return executedInitializer;
     }
 
     _isClass(v) {
@@ -61,6 +90,10 @@ class Services {
         }
 
         return fs.statSync(path).isDirectory();
+    }
+
+    _isPromise(subject) {
+        return typeof subject.then === 'function';
     }
 
     _getDecoratedConfig(basePath) {
@@ -111,7 +144,8 @@ const createServicesProxy = (services) => {
 const defaultOptions = {
     dir: process.cwd() + '/services',
     configDecoratorFile: '_config.js',
-    servicesDecorationFile: '_services.js'
+    servicesDecorationFile: '_services.js',
+    async: false
 };
 
 export default (config, options = {}) => {
