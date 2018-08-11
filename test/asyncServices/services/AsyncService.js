@@ -9,6 +9,6 @@ class AsyncService {
 }
 
 
-export default (services, config) => {
-    return new Promise((resolve, reject) => resolve(new AsyncService(services, config)));
+export default async (services, config) => {
+    return new AsyncService(services, config);
 }
