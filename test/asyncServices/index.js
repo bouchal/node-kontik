@@ -55,6 +55,10 @@ describe('Async services', () => {
         });
     });
 
+    if (process.env.TRAVIS_NODE_VERSION === '6') {
+        return;
+    }
+    
     it ('should load services via async functions', (done) => {
         services.AsyncService.then((service) => {
             if (service.getValue() !== TEST_VALUE) {
