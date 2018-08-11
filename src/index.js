@@ -55,9 +55,17 @@ class Services {
         let initializer = require(this._dir + '/' + name);
         initializer = initializer.default || initializer;
 
-        const executedInitializer = this._isClass(initializer)
-            ? initializer(services, config)
-            : new initializer(services, config);
+        let executedInitializer = null;
+
+        try {
+            executedInitializer = new initializer(services, config)
+        } catch (err) {
+            if (err.message.indexOf('is not a constructor') === -1) {
+                throw err;
+            }
+
+            executedInitializer = initializer(services, config);
+        }
 
         if (!this._async || !this._isPromise(executedInitializer)) {
             this._services[name] = executedInitializer;
@@ -72,10 +80,6 @@ class Services {
         });
 
         return executedInitializer;
-    }
-
-    _isClass(v) {
-        return typeof v === 'function' && /^\s*class\s+/.test(v.toString());
     }
 
     _isDirectory(path) {

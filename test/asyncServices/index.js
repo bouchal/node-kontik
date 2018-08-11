@@ -1,4 +1,5 @@
 import Kontik from '../../src';
+import AsyncService from './services/AsyncService';
 
 const TEST_VALUE = Math.random();
 
@@ -15,7 +16,7 @@ const isPromise = (subject) => {
 
 describe('Async services', () => {
     it('should load return all services as async', (done) => {
-        if (!isPromise(services.AsyncService) || !isPromise(services.SyncService)) {
+        if (!isPromise(services.PromiseService) || !isPromise(services.SyncService)) {
             return done('Some service don\'t return promise');
         }
 
@@ -24,7 +25,7 @@ describe('Async services', () => {
 
     it('should be loaded though promise resolver', (done) => {
         Promise.all([
-            services.AsyncService,
+            services.PromiseService,
             services.SyncService
         ]).then((ser) => {
             const [s1, s2] = ser;
@@ -52,5 +53,15 @@ describe('Async services', () => {
 
             done('Services is not initialized as singleton');
         });
+    });
+
+    it ('should load services via async functions', (done) => {
+        services.AsyncService.then((service) => {
+            if (service.getValue() !== TEST_VALUE) {
+                return done('Some service didn\'t return correct test value');
+            }
+
+            done();
+        })
     });
 });
