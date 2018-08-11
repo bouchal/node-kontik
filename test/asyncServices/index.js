@@ -1,5 +1,4 @@
 import Kontik from '../../src';
-import AsyncService from './services/AsyncService';
 
 const TEST_VALUE = Math.random();
 
@@ -54,6 +53,10 @@ describe('Async services', () => {
             done('Services is not initialized as singleton');
         });
     });
+
+    if (process.env.TRAVIS_NODE_VERSION === '6') {
+        return;
+    }
 
     it ('should load services via async functions', (done) => {
         services.AsyncService.then((service) => {
