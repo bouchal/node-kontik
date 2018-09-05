@@ -1,6 +1,6 @@
 {
   "name": "kontik",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "Simple node service container for managing of singletons",
   "main": "dist/index.js",
   "scripts": {
