@@ -1,4 +1,5 @@
 import fs from "fs";
+import path from "path";
 
 class Services {
     constructor(config, {
@@ -42,7 +43,7 @@ class Services {
 
         this._initializedServices[name] = true;
 
-        const basePath = this._dir + '/' + name;
+        const basePath = this._dir + path.sep + name;
 
         let config = this._config;
         let services = this._proxy;
@@ -52,7 +53,7 @@ class Services {
             services = this._getDecoratedServices(basePath);
         }
 
-        let initializer = require(this._dir + '/' + name);
+        let initializer = require(this._dir + path.sep + name);
         initializer = initializer.default || initializer;
 
         let executedInitializer = null;
@@ -95,7 +96,7 @@ class Services {
     }
 
     _getDecoratedConfig(basePath) {
-        const configDecoratorPath = basePath + '/' + this._configDecoratorFile;
+        const configDecoratorPath = basePath + path.sep + this._configDecoratorFile;
 
         if (!fs.existsSync(configDecoratorPath)) {
             return this._config;
@@ -109,7 +110,7 @@ class Services {
     }
 
     _getDecoratedServices(basePath) {
-        const servicesDecoratorPath = basePath + '/' + this._servicesDecoratorFile;
+        const servicesDecoratorPath = basePath + path.sep + this._servicesDecoratorFile;
 
         if (!fs.existsSync(servicesDecoratorPath)) {
             return this._proxy;
@@ -140,7 +141,7 @@ const createServicesProxy = (services) => {
 };
 
 const defaultOptions = {
-    dir: process.cwd() + '/services',
+    dir: process.cwd() + path.sep + 'services',
     configDecoratorFile: '_config.js',
     servicesDecorationFile: '_services.js',
     async: false
