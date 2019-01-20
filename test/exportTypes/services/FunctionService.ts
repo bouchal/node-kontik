@@ -1,4 +1,4 @@
-module.exports = (services, config) => {
+module.exports = (services: any, config: any) => {
     const value = config.testValue;
 
     return {

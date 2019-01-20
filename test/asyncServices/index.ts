@@ -1,15 +1,14 @@
-import Kontik from '../../src';
+import kontik from '../../src';
 
 const TEST_VALUE = Math.random();
 
-const services = new Kontik({
+const services = kontik({
     testValue: TEST_VALUE
 }, {
     dir: __dirname + '/services',
-    async: true
 });
 
-const isPromise = (subject) => {
+const isPromise = (subject: any) => {
     return typeof subject.then === 'function';
 };
 
@@ -51,6 +50,8 @@ describe('Async services', () => {
             }
 
             done('Services is not initialized as singleton');
+        }).catch((err: Error) => {
+            console.log(err);
         });
     });
 
@@ -59,7 +60,7 @@ describe('Async services', () => {
     }
 
     it ('should load services via async functions', (done) => {
-        services.AsyncService.then((service) => {
+        services.AsyncService.then((service: any) => {
             if (service.getValue() !== TEST_VALUE) {
                 return done('Some service didn\'t return correct test value');
             }

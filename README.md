@@ -20,14 +20,12 @@ const options = {
 };
 
 const services = kontik(config, options);
-
-console.log(services.SimpleService.getValue());
 ```
 
-### Services definition
+### Service providers definition
 
-Services is created in one directory (default `[ CURRENT_WORKING_DIRECTORY ]/services`).
-In this directory you can create file or folder (with `index.js`) with service name.
+Service providers is created in one directory (default `[ CURRENT_WORKING_DIRECTORY ]/services`).
+In this directory you can create file or folder (with `index.js`) with provider name.
 You can define them as class or function.
 
 __Function definition:__
@@ -59,22 +57,18 @@ export default class SimpleService
 }
 ```
 
-### Async services
+### Async providers
 
 In Javascript is almost everything based on asynchronous process. That means that you need to have some common way, 
 how to call asynchronously defined services together with synchronous services without remembering,
 which way is service loaded.
 
-Luckily Kontik have magic `async` parameter in initial options.
+__From version 2.x.x Kontik have only async method for calling services.__
 
 ```javascript
 import kontik from 'kontik';
 
 const config = {...};
-
-const options = {
-    async: true // Default it's false
-};
 
 const services = kontik(config, options);
 
@@ -132,41 +126,3 @@ const services = kontik(config, {
 console.log(services.PredefinedService.getSomeValue());
 ```
 
-### Decorate input parameters
-
-If you define service in folder, you can add files with exported function `_config.js` and `_services.js` for decorate
-them before it's pass to service definition.
-
-__\_config.js__
-
-```javascript
-export default (config) {
-    return {
-        getValue: () => {
-            return config.value
-        }
-    }
-}
-```
-
-__\_services.js__
-
-```javascript
-class Services
-{
-    constructor(simpleService) {
-        this._simpleService = simpleService;
-    }
-    
-    getSimpleService() {
-        return this._simpleService;
-    }
-}
-
-export default (services) => {
-    return new Services(services.SimpleServices);
-}
-```
-
-
- 
