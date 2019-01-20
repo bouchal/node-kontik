@@ -1,11 +1,11 @@
 import * as path from "path";
 
-interface Options {
+export interface Options {
     dir?: string,
-    configDecoratorFile?: string,
-    servicesDecoratorFile?: string,
     services?: { [key: string]: any }
 }
+
+export interface Services { [key: string]: Promise<any> }
 
 class Kontik {
     /**
@@ -16,20 +16,18 @@ class Kontik {
 
     private readonly options: Options = {
         dir: process.cwd() + path.sep + 'services',
-        configDecoratorFile: '_config.js',
-        servicesDecoratorFile: '_services.js',
         services: {}
     };
 
     /**
      * List of already initialized services.
      */
-    private services: { [key: string]: Promise<any> } = {};
+    private services: Services = {};
 
     /**
      * List of initialized providers which isn't finished yet.
      */
-    private initializedPromises: { [key: string]: Promise<any> } = {};
+    private initializedPromises: Services = {};
 
     /**
      * This object is must be set after Kontik container is created because it refer to proxy of itself.
@@ -107,6 +105,6 @@ const createServicesProxy = (services: Kontik): any => {
     return ServicesProxy;
 };
 
-export default (config: any, options: Options = {}): { [key: string]: Promise<any> } => {
+export default (config: any, options: Options = {}): Services => {
     return createServicesProxy(new Kontik(config, options));
 };
