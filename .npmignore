@@ -2,5 +2,5 @@
 test
 src
 .travis.yml
-.tsconfig.json
+tsconfig.json
 .babelrc
