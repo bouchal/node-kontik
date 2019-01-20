@@ -1,4 +1,4 @@
-class ServiceTwo {
+export default class ServiceTwo {
     private readonly testValue: any;
 
     constructor(services: any, config: any) {
@@ -9,5 +9,3 @@ class ServiceTwo {
         return this.testValue;
     }
 }
-
-module.exports = ServiceTwo;
