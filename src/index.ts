@@ -103,7 +103,7 @@ const createServicesProxy = (services: Kontik): any => {
     const servicesProxy = new Proxy(services, {
         get (target: any, name: string) {
             if (name === 'getService') {
-                return function <T>(name: string) {
+                return <T>(name: string) => {
                     return target.getService(name);
                 };
             }
