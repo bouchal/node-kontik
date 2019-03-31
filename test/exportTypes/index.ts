@@ -1,4 +1,5 @@
 import kontik from '../../src';
+import ServiceOne from "./services/ServiceOne";
 
 const TEST_VALUE = Math.random();
 
@@ -11,7 +12,7 @@ const services = kontik({
 describe('Export types', () => {
     it('should load simple stand alone service exported as ES6 module', async () => {
         const service = await services.ServiceOne;
-        if (service.constructor.name !== 'ServiceOne') {
+        if (!(service instanceof ServiceOne)) {
             throw new Error('Services container doesn\'t return right service');
         }
     });
@@ -37,6 +38,14 @@ describe('Export types', () => {
 
         if (service.getTestValue() !== TEST_VALUE) {
             throw new Error('Service doesn\'t return right value');
+        }
+    });
+
+    it('should load service through getService method', async() => {
+        const service = await services.getService<ServiceOne>('ServiceOne');
+
+        if (!(service instanceof ServiceOne)) {
+            throw new Error('Services container doesn\'t return right service');
         }
     });
 });

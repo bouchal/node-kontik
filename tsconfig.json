@@ -10,7 +10,7 @@
       "es2015.proxy"
     ],
     "outDir": "./dist",
-    "declaration": true
+    "alwaysStrict": true
   },
   "include": [
     "./src/**/*"

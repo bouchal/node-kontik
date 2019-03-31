@@ -5,7 +5,13 @@ export interface Options {
     services?: { [key: string]: any }
 }
 
-export interface Services { [key: string]: Promise<any> }
+type ServiceStorage = {
+    [key: string]: Promise<any>
+}
+
+export type Services = ServiceStorage & {
+    getService: <T>(name: string) => Promise<T>
+}
 
 class Kontik {
     /**
@@ -15,19 +21,19 @@ class Kontik {
     private readonly config: object;
 
     private readonly options: Options = {
-        dir: process.cwd() + path.sep + 'services',
+        dir: `${process.cwd()}${path.sep}services`,
         services: {}
     };
 
     /**
      * List of already initialized services.
      */
-    private services: Services = {};
+    private services: ServiceStorage = {};
 
     /**
      * List of initialized providers which isn't finished yet.
      */
-    private initializedPromises: Services = {};
+    private initializedPromises: ServiceStorage = {};
 
     /**
      * This object is must be set after Kontik container is created because it refer to proxy of itself.
@@ -94,15 +100,21 @@ class Kontik {
 }
 
 const createServicesProxy = (services: Kontik): any => {
-    const ServicesProxy = new Proxy(services, {
-        get: function (target: any, name: string) {
+    const servicesProxy = new Proxy(services, {
+        get (target: any, name: string) {
+            if (name === 'getService') {
+                return function <T>(name: string) {
+                    return services.getService(name);
+                };
+            }
+
             return target.getService(name);
         }
     });
 
-    services.setProxy(ServicesProxy);
+    services.setProxy(servicesProxy);
 
-    return ServicesProxy;
+    return servicesProxy;
 };
 
 export default (config: any, options: Options = {}): Services => {
