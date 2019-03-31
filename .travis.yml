@@ -6,7 +6,6 @@ cache:
 
 node_js:
 - "stable"
-- "6"
 - "8"
 - "9"
 - "10"
