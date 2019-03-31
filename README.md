@@ -79,7 +79,22 @@ const print = async () => {
 }
 ```
 
-After that every call to any service is served every time through Promise.   
+After that every call to any service is served every time through Promise.  
+
+### Typed calls
+
+It you write code in TypeScript, it's good to know what type is returned from container as service.
+
+For this you can use method with reserved name `getService` and to generic parameter add expected type.
+
+```typescript
+const simpleService = await services.getService<SimpleService>('SimpleService');
+``` 
+
+From now your IDE will suggest you methods of wanted instance.
+
+__For now it's only cosmetic feature which makes programming little bit nicer.
+Unfortunately JavaScript service loader can't check types based on generic type.__
 
 #### How it works?
 
