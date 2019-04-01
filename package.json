@@ -3,6 +3,7 @@
   "version": "2.2.0",
   "description": "Simple node service container for managing of singletons",
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc && npm run bundle",
     "bundle": "dts-bundle-generator --config dtsconfig.js",
