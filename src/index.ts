@@ -1,122 +1,29 @@
-import * as path from "path";
+import {Options} from "./interfaces/Options"
+import Kontik from "./Kontik"
+import FileProviderDefinitionRepo from "./repositories/FileProviderDefinitionRepo"
+import * as path from "path"
+import {Provider} from "./types/Provider"
+import {Providers} from "./types/Providers"
+import {ProviderDefinitionRepo} from "./interfaces/ProviderDefinitionRepo"
+import {ProvidersStorage} from "./types/ProvidersStorage"
 
-export interface Options {
-    dir?: string,
-    services?: { [key: string]: any }
+export {
+    Kontik,
+    Options,
+    Provider,
+    Providers,
+    ProvidersStorage,
+    ProviderDefinitionRepo
 }
 
-type ServiceStorage = {
-    [key: string]: Promise<any>
+export default (
+    config: object,
+    options?: Options
+): Kontik => {
+    const dir = options && options.dir ? options.dir : `${process.cwd()}${path.sep}providers`
+    const providers = options && options.providers ? options.providers : {}
+
+    const providerDefinitionRepo = new FileProviderDefinitionRepo(dir)
+
+    return new Kontik(providerDefinitionRepo, config, providers)
 }
-
-export type Services = ServiceStorage & {
-    getService: <T>(name: string) => Promise<T>
-}
-
-class Kontik {
-    /**
-     * Config passed to service provider when it's initializing.
-     * It's passed to Kontik instance through constructor.
-     */
-    private readonly config: object;
-
-    private readonly options: Options = {
-        dir: `${process.cwd()}${path.sep}services`,
-        services: {}
-    };
-
-    /**
-     * List of already initialized services.
-     */
-    private services: ServiceStorage = {};
-
-    /**
-     * List of initialized providers which isn't finished yet.
-     */
-    private initializedPromises: ServiceStorage = {};
-
-    /**
-     * This object is must be set after Kontik container is created because it refer to proxy of itself.
-     */
-    private proxy?: any;
-
-    public constructor(config: any, options?: Options) {
-        this.config = config;
-        this.options = {
-            ...this.options,
-            ...options
-        };
-    }
-
-
-    /**
-     * Return promise with initialized service through service provider.
-     *
-     * @param name
-     */
-    public async getService(name: string): Promise<any> {
-        // First check if service isn't passed in options.
-        if (this.options.services && this.options.services[name]) {
-            return await this.options.services[name];
-        }
-
-        // Check if service isn't already finished or initialized
-        return this.services[name]
-            || this.initializedPromises[name]
-            || (this.initializedPromises[name] = this.initService(name));
-    }
-
-    private async initService(name: string): Promise<any> {
-        const config = this.config;
-        const services = this.proxy;
-
-        let initializer = await import(this.options.dir + path.sep + name);
-        initializer = initializer.default || initializer;
-
-        let executedInitializer = null;
-
-        try {
-            executedInitializer = new initializer(services, config);
-        } catch (err) {
-            if (err.message.indexOf('is not a constructor') === -1) {
-                throw err;
-            }
-
-            executedInitializer = initializer(services, config);
-        }
-
-        const service = await executedInitializer;
-
-        delete this.initializedPromises[name];
-        this.services[name] = service;
-
-        return service;
-    }
-
-
-    public setProxy(proxy: any): void {
-        this.proxy = proxy;
-    }
-}
-
-const createServicesProxy = (services: Kontik): any => {
-    const servicesProxy = new Proxy(services, {
-        get (target: any, name: string) {
-            if (name === 'getService') {
-                return <T>(name: string) => {
-                    return target.getService(name);
-                };
-            }
-
-            return target.getService(name);
-        }
-    });
-
-    services.setProxy(servicesProxy);
-
-    return servicesProxy;
-};
-
-export default (config: any, options: Options = {}): Services => {
-    return createServicesProxy(new Kontik(config, options));
-};

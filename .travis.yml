@@ -5,6 +5,7 @@ cache:
   - node_modules
 
 node_js:
+- "latest"
 - "stable"
 - "8"
 - "9"
@@ -17,3 +18,5 @@ jobs:
   - stage: TS lint
     node_js: stable
     script: npm run lint
+
+after_success: npm run coveralls
