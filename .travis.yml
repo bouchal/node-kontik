@@ -17,3 +17,5 @@ jobs:
   - stage: TS lint
     node_js: stable
     script: npm run lint
+
+after_success: npm run coveralls
