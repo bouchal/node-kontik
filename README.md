@@ -19,7 +19,7 @@ dependent components) and application config.
 __Create instance of kontik providers container__
 
 ```typescript
-import kontik, {Options} from './src'
+import kontik, {Options} from 'kontik'
 
 // Application custom config. Will be provide to all provider definition
 const config = {...}
