@@ -26,7 +26,7 @@ export {
 }
 
 export default (
-    config: object,
+    config: any,
     options?: Options
 ): Kontik => {
     const dir = options && options.dir ? options.dir : `${process.cwd()}${path.sep}providers`
