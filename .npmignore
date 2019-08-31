@@ -5,3 +5,7 @@ src
 tsconfig.json
 dtsconfig.js
 tslint.json
+doc
+.nyc_output
+coverage
+mocha.opts
