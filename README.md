@@ -1,4 +1,4 @@
-![kontik logo](./doc/images/logo.png)
+![kontik logo](https://raw.githubusercontent.com/bouchal/node-kontik/master/doc/images/logo.png)
 
 Easy to understand and simple container for providing singletons.
 
