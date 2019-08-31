@@ -8,6 +8,7 @@
       true,
       "never"
     ],
-    "ter-prefer-arrow-callback": [false]
+    "ter-prefer-arrow-callback": [false],
+    "eofline": true
   }
 }
