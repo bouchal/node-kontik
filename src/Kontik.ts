@@ -1,7 +1,8 @@
 import {ProvidersStorage} from "./types/ProvidersStorage"
 import {ProviderDefinitionRepo} from "./interfaces/ProviderDefinitionRepo"
+import {Providers} from "./types/Providers";
 
-export default class Kontik {
+export default class Kontik implements Providers {
     /**
      * List of initialized providers which isn't finished yet.
      */
