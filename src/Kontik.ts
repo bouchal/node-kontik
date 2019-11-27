@@ -1,6 +1,6 @@
 import {ProvidersStorage} from "./types/ProvidersStorage"
 import {ProviderDefinitionRepo} from "./interfaces/ProviderDefinitionRepo"
-import {Providers} from "./types/Providers";
+import {Providers} from "./types/Providers"
 
 export default class Kontik implements Providers {
     /**
